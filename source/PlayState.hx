@@ -1,23 +1,109 @@
 package;
 
+import flixel.addons.nape.FlxNapeSprite;
+import flixel.addons.nape.FlxNapeState;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.group.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
+import flixel.util.FlxColor;
 import flixel.util.FlxMath;
+import nape.callbacks.CbEvent;
+import nape.callbacks.InteractionCallback;
+import nape.callbacks.InteractionListener;
+import nape.callbacks.InteractionType;
+import nape.constraint.DistanceJoint;
+import nape.constraint.MotorJoint;
+import nape.phys.BodyType;
+import flixel.util.FlxRandom;
+import flixel.FlxCamera;
+import flixel.util.FlxTimer;
+
+using flixel.util.FlxSpriteUtil;
 
 /**
  * A FlxState which can be used for the actual gameplay.
  */
-class PlayState extends FlxState
+class PlayState extends FlxNapeState
 {
+	private static inline var LEVEL_LEFT:Float = -2400;
+	private static inline var LEVEL_RIGHT:Float = 3200;
+	
+	//private var ground:FlxNapeSprite;
+	private var unicycle:Unicycle;
+	private var head:Head;
+	private var joint:DistanceJoint;
+	
+	//private var food:Food;
+	private var newFoodTimer:FlxTimer;
+	
+	private var foodGroup:FlxTypedGroup<Food>;
+	private var scoreText:FlxText;
+	
+	private var score:Int = 0;
+	
+	private var fallenTime:Float = 0;
+	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
 	override public function create():Void
 	{
+		FlxG.camera.bgColor = 0xff50a0cc;
+		FlxG.camera.antialiasing = true;
+		
 		super.create();
+		napeDebugEnabled = true;
+		
+		createWalls(LEVEL_LEFT, 0, LEVEL_RIGHT, FlxG.height - 20);
+		
+		unicycle = new Unicycle(400, 200);
+		head = new Head(400, 200 - 64 - 16);
+		
+		joint = new DistanceJoint(unicycle.body, head.body, unicycle.body.localCOM, head.body.localCOM, 64 + 10, 64 + 10);
+		joint.space = FlxNapeState.space;
+		
+		FlxNapeState.space.gravity.setxy(0, 500);
+		
+		scoreText = new FlxText(0, 80, 0, "0", 32);
+		scoreText.scrollFactor.set();
+		scoreText.screenCenter(true, false);
+		
+		foodGroup = new FlxTypedGroup<Food>();
+		newFood(); newFood(); newFood();
+		
+		newFoodTimer = new FlxTimer(6, newFood, 0);
+		
+		add(unicycle);
+		add(foodGroup);
+		add(head);
+		
+		FlxG.camera.setBounds(LEVEL_LEFT, 0, LEVEL_RIGHT, FlxG.height);
+		FlxG.camera.follow(head, FlxCamera.STYLE_PLATFORMER, null, 10);
+		
+		FlxG.watch.addMouse();
+	}
+	
+	function getRandomX():Float
+	{
+		var min:Float = head.x - 360;
+		if (min < LEVEL_LEFT)
+		{
+			min = LEVEL_LEFT + 64;
+		}
+		var max:Float = head.x + 360;
+		if (max > LEVEL_RIGHT)
+		{
+			max = LEVEL_RIGHT - 64;
+		}
+		return FlxRandom.floatRanged(min, max);
+	}
+	
+	function newFood(?T:FlxTimer):Void
+	{
+		foodGroup.add(new Food(getRandomX(), 250));
 	}
 	
 	/**
@@ -26,6 +112,7 @@ class PlayState extends FlxState
 	 */
 	override public function destroy():Void
 	{
+		newFoodTimer.cancel();
 		super.destroy();
 	}
 
@@ -34,6 +121,40 @@ class PlayState extends FlxState
 	 */
 	override public function update():Void
 	{
+		if (FlxG.keys.justPressed.R)
+		{
+			FlxG.resetState();
+		}
+		
+		if (head.y > 310)
+		{
+			fallenTime += FlxG.elapsed;
+			if (fallenTime >= 2)
+			{
+				// Game Over
+				MenuState.Last = score;
+				if (MenuState.Best < score)
+				{
+					MenuState.Best = score;
+				}
+				FlxG.switchState(new MenuState());
+			}
+		}
+		
+		foodGroup.forEachAlive(function (food:Food)
+		{
+			if (food.overlapsAABB(head.body.bounds))
+			{
+				food.destroy();
+				foodGroup.remove(food);
+				
+				newFood();
+				head.body.mass += 1;
+				head.scale.add(0.5, 0.5);
+				++score;
+			}
+		});
+		
 		super.update();
 	}	
 }

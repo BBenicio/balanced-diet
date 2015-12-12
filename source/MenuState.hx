@@ -7,20 +7,34 @@ import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 
+using flixel.util.FlxSpriteUtil;
+
 /**
  * A FlxState which can be used for the game's menu.
  */
 class MenuState extends FlxState
-{
-	private var _playButton:FlxButton;
+{	
+	public static var Best:Int = 0;
+	public static var Last:Int = 0;
+	
+	private var title:FlxText;
+	private var playButton:FlxButton;
+	private var controls:FlxText;
+	private var sound:FlxButton;//?
+	private var score:FlxText;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
 	override public function create():Void
 	{
-		_playButton = new FlxButton(
+		playButton = new FlxButton(0, 0, "Play", function ()
+		{
+			FlxG.switchState(new PlayState());
+		});
+		playButton.screenCenter();
 		
+		add(playButton);
 		super.create();
 	}
 	
