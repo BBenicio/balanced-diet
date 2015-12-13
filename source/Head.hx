@@ -14,8 +14,6 @@ class Head extends FlxNapeSprite
 {
 	public static var Impulse:Float = 50;
 	
-	private var prevScale:FlxPoint;
-	
 	public function new(X:Float=0, Y:Float=0)
 	{
 		super(X, Y, null, false);
@@ -27,8 +25,8 @@ class Head extends FlxNapeSprite
 		
 		body.shapes.at(0).filter.collisionGroup = 1;
 		
-		animation.add("byte", [0, 1], 1);
-		animation.play("byte");
+		animation.add("mouth", [0, 1], 1);
+		animation.play("mouth");
 	}
 	
 	public function move(mod:Float)
@@ -38,7 +36,6 @@ class Head extends FlxNapeSprite
 	
 	override public function update():Void 
 	{
-		prevScale = scale;
 		super.update();
 		
 		x = body.position.x - width / 2;

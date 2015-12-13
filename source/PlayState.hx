@@ -41,6 +41,7 @@ class PlayState extends FlxNapeState
 	private var foodGroup:FlxTypedGroup<Food>;
 	private var scoreText:FlxText;
 	
+	
 	private var score:Int = 0;
 	
 	private var fallenTime:Float = 0;
@@ -57,15 +58,17 @@ class PlayState extends FlxNapeState
 		
 		createWalls(LEVEL_LEFT, 0, LEVEL_RIGHT, FlxG.height - 20);
 		
-		unicycle = new Unicycle(400, 200);
-		head = new Head(400, 200 - 64 - 16);
+		unicycle = new Unicycle(400, 346);
+		//head = new Head(400, 346 - 64 - 16);
+		head = new Head(400, 346 - 64);
 		
-		joint = new DistanceJoint(unicycle.body, head.body, unicycle.body.localCOM, head.body.localCOM, 64 + 10, 64 + 10);
+		//joint = new DistanceJoint(unicycle.body, head.body, unicycle.body.localCOM, head.body.localCOM, 64 + 10, 64 + 10);
+		joint = new DistanceJoint(unicycle.body, head.body, unicycle.body.localCOM, head.body.localCOM, 64, 64);
 		joint.space = FlxNapeState.space;
 		
 		FlxNapeState.space.gravity.setxy(0, 500);
 		
-		scoreText = new FlxText(0, 80, 0, "0", 64);
+		scoreText = new FlxText(0, 40, 0, "0", 96);
 		scoreText.scrollFactor.set();
 		scoreText.screenCenter(true, false);
 		
@@ -74,16 +77,12 @@ class PlayState extends FlxNapeState
 		
 		newFoodTimer = new FlxTimer(6, newFood, 0);
 		
+		add(scoreText);
 		add(foodGroup);
 		add(unicycle);
 		add(head);
-		add(scoreText);
 		
 		FlxG.camera.follow(head, FlxCamera.STYLE_PLATFORMER, null, 10);
-		
-		FlxG.watch.addMouse();
-		FlxG.watch.add(head, "scale", "head.scale");
-		FlxG.watch.add(head.body, "mass", "head.mass");
 	}
 	
 	function getRandomX():Float
@@ -121,6 +120,24 @@ class PlayState extends FlxNapeState
 	 */
 	override public function update():Void
 	{
+		if (head.y > 310)
+		{
+			fallenTime += FlxG.elapsed;
+			if (fallenTime >= 1.5)
+			{
+				// Game Over
+				MenuState.Last = score;
+				if (MenuState.Best < score)
+				{
+					MenuState.Best = score;
+				}
+				FlxG.switchState(new MenuState());
+			}
+			
+			super.update();
+			return;
+		}
+		
 		if (FlxG.keys.justPressed.R)
 		{
 			FlxG.resetState();
@@ -133,21 +150,6 @@ class PlayState extends FlxNapeState
 		else if (FlxG.keys.pressed.RIGHT)
 		{
 			unicycle.move(1);
-		}
-		
-		if (head.y > 310)
-		{
-			fallenTime += FlxG.elapsed;
-			if (fallenTime >= 2)
-			{
-				// Game Over
-				MenuState.Last = score;
-				if (MenuState.Best < score)
-				{
-					MenuState.Best = score;
-				}
-				FlxG.switchState(new MenuState());
-			}
 		}
 		
 		foodGroup.forEachAlive(function (food:Food)
@@ -165,5 +167,11 @@ class PlayState extends FlxNapeState
 		});
 		
 		super.update();
-	}	
+	}
+	
+	override public function draw():Void 
+	{
+		
+		super.draw();
+	}
 }

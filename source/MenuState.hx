@@ -32,7 +32,7 @@ class MenuState extends FlxState
 		title = new FlxText(0, 80, 0, "Balanced Diet", 64);
 		title.screenCenter(true, false);
 		
-		controls = new FlxText(0, FlxG.height - 80, 0, "hit ANY key to play\nuse Left/Right to move", 16);
+		controls = new FlxText(0, FlxG.height - 80, 0, "hit Any key to play\nuse Left/Right to move", 16);
 		controls.screenCenter(true, false);
 		controls.alignment = "center";
 		
