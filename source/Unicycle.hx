@@ -34,7 +34,8 @@ class Unicycle extends FlxNapeSprite
 	}
 	
 	override public function update():Void 
-	{super.update();
+	{
+		super.update();
 		
 		x = body.position.x - width / 2;
 		y = body.position.y - height / 2;

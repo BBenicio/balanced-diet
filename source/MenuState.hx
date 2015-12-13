@@ -2,14 +2,13 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.addons.nape.FlxNapeState;
 import flixel.system.FlxSound;
 import flixel.text.FlxText;
+import flixel.util.FlxColor;
 import flixel.ui.FlxButton;
-import flixel.util.FlxMath;
-import nape.constraint.DistanceJoint;
 import flixel.plugin.MouseEventManager;
+import flixel.util.FlxDestroyUtil;
 
 using flixel.util.FlxSpriteUtil;
 
@@ -31,7 +30,6 @@ class MenuState extends FlxNapeState
 	private var ground:FlxSprite;
 	
 	private var unicycle:Unicycle;
-	private var joint:DistanceJoint;
 	
 	private var unicycleImpulseInterval:Float = 0;
 	
@@ -53,7 +51,7 @@ class MenuState extends FlxNapeState
 		
 		buildings = new FlxSprite(0, 0, AssetPaths.buildings__png);
 		buildings.x = FlxG.width - buildings.width - 30;
-		buildings.y = FlxG.height - buildings.height - 100;
+		buildings.y = FlxG.height - buildings.height - 100 + 5;
 		
 		bgTint = new FlxSprite(0, 0);
 		bgTint.makeGraphic(FlxG.width, FlxG.height, 0x6500b6b6);
@@ -63,21 +61,23 @@ class MenuState extends FlxNapeState
 		ground.y = FlxG.height - 100;
 		
 		title = new FlxText(0, 80, 0, "Balanced Diet", 64);
+		title.alignment = "center";
+		title.setBorderStyle(FlxText.BORDER_OUTLINE, FlxColor.BLACK, 6, 1);
 		title.screenCenter(true, false);
 		
 		controls = new FlxText(0, FlxG.height - 80, 0, "hit Any key to play\nuse Left/Right to move", 16);
 		controls.screenCenter(true, false);
 		controls.alignment = "center";
 		
-		score = new FlxText(0, 0, 0, "Best Score: " + Best + "\nLast Score: " + Last, 8);
+		score = new FlxText(0, 10, 0, "Best Score: " + Best + "\nLast Score: " + Last, 8);
+		score.x = FlxG.width - score.width - 10;
 		
-		sound = new FlxSprite(0, 0);
+		sound = new FlxSprite(10, 10);
 		sound.loadGraphic(AssetPaths.sound__png, true, 40, 50);
 		if (FlxG.sound.muted)
 		{
 			sound.animation.frameIndex = 1;
 		}
-		sound.x = FlxG.width - sound.width - 10;
 		MouseEventManager.add(sound, function (S:FlxSprite)
 		{
 			sound.animation.frameIndex += 1;
@@ -119,6 +119,16 @@ class MenuState extends FlxNapeState
 	 */
 	override public function destroy():Void
 	{
+		title = FlxDestroyUtil.destroy(title);
+		controls = FlxDestroyUtil.destroy(controls);
+		sound = FlxDestroyUtil.destroy(sound);
+		score = FlxDestroyUtil.destroy(score);
+		buildings = FlxDestroyUtil.destroy(buildings);
+		bgTint = FlxDestroyUtil.destroy(bgTint);
+		ground = FlxDestroyUtil.destroy(ground);
+		unicycle = FlxDestroyUtil.destroy(unicycle);
+		music = FlxDestroyUtil.destroy(music);
+		
 		super.destroy();
 	}
 
