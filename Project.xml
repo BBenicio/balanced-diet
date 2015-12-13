@@ -2,7 +2,7 @@
 <project>
 	<!------------------------------APPLICATION SETTINGS---------------------------->
 	
-	<app title="BalanceEater" file="BalanceEater" main="Main" version="0.0.1" company="HaxeFlixel" />
+	<app title="Balanced Diet" file="BalancedDiet" main="Main" version="0.0.1" />
 	
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file
 	<!--or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"!-->
@@ -29,14 +29,17 @@
 	
 	<set name="BUILD_DIR" value="export" />
 	<classpath name="source" />
-	<assets path="assets" />
+	<assets path="assets/images" include="*.png" />
+	<assets path="assets/sounds" include="*.wav" />
+	<assets path="assets/music" include="*.mp3" if="flash" />
+	<assets path="assets/music" include="*.ogg" unless="flash" />
 	
 	<!--------------------------------LIBRARIES------------------------------------->
 
 	<haxelib name="flixel"/>
 	
 	<!--In case you want to use the addons package-->
-	<!--haxelib name="flixel-addons" /-->
+	<haxelib name="flixel-addons" />
 	
 	<!--In case you want to use the ui package-->
 	<!--haxelib name="flixel-ui"/-->

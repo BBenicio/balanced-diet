@@ -1,1 +1,1 @@
-# BalanceEater 
+# Balanced Diet
