@@ -28,15 +28,14 @@ using flixel.util.FlxSpriteUtil;
  */
 class PlayState extends FlxNapeState
 {
-	private static inline var LEVEL_LEFT:Float = -2400;
-	private static inline var LEVEL_RIGHT:Float = 3200;
+	private static inline var LEVEL_LEFT:Float = -800;
+	private static inline var LEVEL_RIGHT:Float = 1600;
 	
 	//private var ground:FlxNapeSprite;
 	private var unicycle:Unicycle;
 	private var head:Head;
 	private var joint:DistanceJoint;
 	
-	//private var food:Food;
 	private var newFoodTimer:FlxTimer;
 	
 	private var foodGroup:FlxTypedGroup<Food>;
@@ -51,7 +50,6 @@ class PlayState extends FlxNapeState
 	 */
 	override public function create():Void
 	{
-		FlxG.camera.bgColor = 0xff50a0cc;
 		FlxG.camera.antialiasing = true;
 		
 		super.create();
@@ -67,7 +65,7 @@ class PlayState extends FlxNapeState
 		
 		FlxNapeState.space.gravity.setxy(0, 500);
 		
-		scoreText = new FlxText(0, 80, 0, "0", 32);
+		scoreText = new FlxText(0, 80, 0, "0", 64);
 		scoreText.scrollFactor.set();
 		scoreText.screenCenter(true, false);
 		
@@ -76,14 +74,16 @@ class PlayState extends FlxNapeState
 		
 		newFoodTimer = new FlxTimer(6, newFood, 0);
 		
-		add(unicycle);
 		add(foodGroup);
+		add(unicycle);
 		add(head);
+		add(scoreText);
 		
-		FlxG.camera.setBounds(LEVEL_LEFT, 0, LEVEL_RIGHT, FlxG.height);
 		FlxG.camera.follow(head, FlxCamera.STYLE_PLATFORMER, null, 10);
 		
 		FlxG.watch.addMouse();
+		FlxG.watch.add(head, "scale", "head.scale");
+		FlxG.watch.add(head.body, "mass", "head.mass");
 	}
 	
 	function getRandomX():Float
@@ -126,6 +126,15 @@ class PlayState extends FlxNapeState
 			FlxG.resetState();
 		}
 		
+		if (FlxG.keys.pressed.LEFT)
+		{
+			unicycle.move(-1);
+		}
+		else if (FlxG.keys.pressed.RIGHT)
+		{
+			unicycle.move(1);
+		}
+		
 		if (head.y > 310)
 		{
 			fallenTime += FlxG.elapsed;
@@ -149,9 +158,9 @@ class PlayState extends FlxNapeState
 				foodGroup.remove(food);
 				
 				newFood();
-				head.body.mass += 1;
-				head.scale.add(0.5, 0.5);
-				++score;
+				head.body.mass += head.body.mass * 0.01;
+				head.scale.add(0.01, 0.01);
+				scoreText.text = ++score + "";
 			}
 		});
 		

@@ -18,9 +18,8 @@ class MenuState extends FlxState
 	public static var Last:Int = 0;
 	
 	private var title:FlxText;
-	private var playButton:FlxButton;
 	private var controls:FlxText;
-	private var sound:FlxButton;//?
+	//private var sound:FlxButton;
 	private var score:FlxText;
 	
 	/**
@@ -28,13 +27,21 @@ class MenuState extends FlxState
 	 */
 	override public function create():Void
 	{
-		playButton = new FlxButton(0, 0, "Play", function ()
-		{
-			FlxG.switchState(new PlayState());
-		});
-		playButton.screenCenter();
+		FlxG.camera.bgColor = 0xff50a0cc;
 		
-		add(playButton);
+		title = new FlxText(0, 80, 0, "Balanced Diet", 64);
+		title.screenCenter(true, false);
+		
+		controls = new FlxText(0, FlxG.height - 80, 0, "hit ANY key to play\nuse Left/Right to move", 16);
+		controls.screenCenter(true, false);
+		controls.alignment = "center";
+		
+		score = new FlxText(0, 0, 0, "Best Score: " + Best + "\nLast Score: " + Last, 8);
+		
+		add(title);
+		add(controls);
+		add(score);
+		
 		super.create();
 	}
 	
@@ -52,6 +59,11 @@ class MenuState extends FlxState
 	 */
 	override public function update():Void
 	{
+		if (FlxG.keys.pressed.ANY)
+		{
+			FlxG.switchState(new PlayState());
+		}
+		
 		super.update();
 	}	
 }

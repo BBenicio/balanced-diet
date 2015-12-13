@@ -3,6 +3,8 @@ package;
 import flixel.addons.nape.FlxNapeSprite;
 import flixel.util.FlxColor;
 import flixel.FlxG;
+import flixel.util.FlxPoint;
+import nape.geom.Vec2;
 
 /**
  * ...
@@ -10,10 +12,13 @@ import flixel.FlxG;
  */
 class Head extends FlxNapeSprite
 {
+	public static var Impulse:Float = 50;
+	
+	private var prevScale:FlxPoint;
+	
 	public function new(X:Float=0, Y:Float=0)
 	{
 		super(X, Y, null, false);
-		//makeGraphic(64, 64, FlxColor.TRANSPARENT);
 		loadGraphic(AssetPaths.head__png, true, 64, 64);
 		
 		createRectangularBody();
@@ -26,8 +31,14 @@ class Head extends FlxNapeSprite
 		animation.play("byte");
 	}
 	
+	public function move(mod:Float)
+	{
+		body.applyImpulse(new Vec2(Impulse * mod, 0));
+	}
+	
 	override public function update():Void 
 	{
+		prevScale = scale;
 		super.update();
 		
 		x = body.position.x - width / 2;
