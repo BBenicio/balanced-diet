@@ -4,26 +4,23 @@ import flixel.addons.nape.FlxNapeSprite;
 import flixel.addons.nape.FlxNapeState;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.group.FlxTypedGroup;
 import flixel.system.FlxSound;
 import flixel.text.FlxText;
-import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
-import flixel.util.FlxMath;
 import nape.callbacks.CbEvent;
 import nape.callbacks.CbType;
 import nape.callbacks.InteractionCallback;
 import nape.callbacks.InteractionListener;
 import nape.callbacks.InteractionType;
 import nape.constraint.DistanceJoint;
-import nape.constraint.MotorJoint;
 import nape.phys.BodyType;
 import flixel.util.FlxRandom;
 import flixel.FlxCamera;
 import flixel.util.FlxTimer;
+import flixel.util.FlxDestroyUtil;
 
 using flixel.util.FlxSpriteUtil;
 
@@ -73,7 +70,7 @@ class PlayState extends FlxNapeState
 		buildings = new FlxSprite(0, 0, AssetPaths.buildings__png);
 		buildings.scrollFactor.set(0.05, 1);
 		buildings.x = FlxG.width - buildings.width - 30;
-		buildings.y = FlxG.height - buildings.height;
+		buildings.y = FlxG.height - buildings.height + 5;
 		
 		bgTint = new FlxSprite(LEVEL_LEFT, 0);
 		bgTint.scrollFactor.set(0, 0);
@@ -102,7 +99,9 @@ class PlayState extends FlxNapeState
 		
 		FlxNapeState.space.gravity.setxy(0, 500);
 		
-		scoreText = new FlxText(0, 40, 0, "0", 96);
+		scoreText = new FlxText(0, 30, 0, "0", 96);
+		scoreText.alignment = "center";
+		scoreText.setBorderStyle(FlxText.BORDER_OUTLINE, FlxColor.BLACK, 8, 1);
 		scoreText.scrollFactor.set();
 		scoreText.screenCenter(true, false);
 		
@@ -150,24 +149,27 @@ class PlayState extends FlxNapeState
 			min = LEVEL_LEFT + 64;
 		}
 		
-		var first:Float = FlxRandom.floatRanged(min, head.x - 40);
-		
 		var max:Float = head.x + 360;
 		if (max > LEVEL_RIGHT)
 		{
 			max = LEVEL_RIGHT - 64;
 		}
 		
-		var second:Float = FlxRandom.floatRanged(head.x + 40, max);
-		return FlxRandom.chanceRoll() ? first : second;
+		return FlxRandom.chanceRoll() ? FlxRandom.floatRanged(min, head.x - 40) : FlxRandom.floatRanged(head.x + 40, max);
 	}
 	
 	function newFood(?T:FlxTimer):Void
 	{
-		var f:Food = new Food(getRandomX(), 310);
-		f.scale.set();
-		FlxTween.tween(f.scale, { x: 1, y: 1 }, 0.4, { type: FlxTween.ONESHOT, ease: FlxEase.elasticInOut } );
-		foodGroup.add(f);
+		foodGroup.add(new Food(getRandomX(), 310, foodGroup));
+		
+		if (foodGroup.length > 10)
+		{
+			var first:Food = foodGroup.getFirstAlive();
+			if (first != null)
+			{
+				first.destroy();
+			}
+		}
 	}
 	
 	/**
@@ -177,6 +179,20 @@ class PlayState extends FlxNapeState
 	override public function destroy():Void
 	{
 		newFoodTimer.cancel();
+		unicycle = FlxDestroyUtil.destroy(unicycle);
+		head = FlxDestroyUtil.destroy(head);
+		joint = null;
+		foodGroup = FlxDestroyUtil.destroy(foodGroup);
+		scoreText = FlxDestroyUtil.destroy(scoreText);
+		buildings = FlxDestroyUtil.destroy(buildings);
+		bgTint = FlxDestroyUtil.destroy(bgTint);
+		ground = FlxDestroyUtil.destroy(ground);
+		leftWall = FlxDestroyUtil.destroy(leftWall);
+		rightWall = FlxDestroyUtil.destroy(rightWall);
+		
+		wallHit = FlxDestroyUtil.destroy(wallHit);
+		eat = FlxDestroyUtil.destroy(eat);
+		
 		super.destroy();
 	}
 
@@ -219,12 +235,12 @@ class PlayState extends FlxNapeState
 		
 		foodGroup.forEachAlive(function (food:Food)
 		{
-			if (food.overlapsAABB(head.body.bounds))
+			if (!food.eaten && food.overlapsAABB(head.body.bounds))
 			{
 				eat.play(true);
 				
+				food.eaten = true;
 				food.destroy();
-				foodGroup.remove(food);
 				
 				newFood();
 				head.body.mass += head.body.mass * 0.01;

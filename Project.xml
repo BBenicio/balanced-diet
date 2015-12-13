@@ -17,7 +17,7 @@
 	<window width="800" height="400" fps="60" background="#000000" hardware="true" vsync="true" />
 	
 	<!--Web-specific-->
-	<window if="web" orientation="portrait"  />
+	<window if="web" orientation="portrait" />
 	
 	<!--Desktop-specific-->
 	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" />
@@ -82,4 +82,9 @@
 	<!--------------------------------CUSTOM---------------------------------------->
 	
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
+	<icon path="icon16.png" size="16" />
+	<icon path="icon32.png" size="32" />
+	<icon path="icon64.png" size="64" />
+	<icon path="icon128.png" size="128" />
+	
 </project>
