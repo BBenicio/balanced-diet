@@ -4,6 +4,7 @@ import flixel.addons.nape.FlxNapeSprite;
 import nape.geom.AABB;
 import nape.phys.BodyType;
 import flixel.util.FlxColor;
+import flixel.util.FlxRandom;
 
 /**
  * ...
@@ -16,9 +17,10 @@ class Food extends FlxNapeSprite
 	{
 		super(X, Y, null, false);
 		
-		makeGraphic(32, 32, FlxColor.TRANSPARENT);
+		//makeGraphic(32, 32, FlxColor.TRANSPARENT);
+		loadGraphic("assets/images/food" + FlxRandom.intRanged(1, 4) + ".png");
 		
-		createRectangularBody(0, 0, BodyType.KINEMATIC);
+		createRectangularBody(0, 0, BodyType.STATIC);
 		physicsEnabled = true;
 		
 		body.shapes.at(0).filter.collisionGroup = 2;

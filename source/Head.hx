@@ -24,6 +24,7 @@ class Head extends FlxNapeSprite
 		physicsEnabled = true;
 		
 		body.shapes.at(0).filter.collisionGroup = 1;
+		body.mass = 1;
 		
 		animation.add("mouth", [0, 1], 1);
 		animation.play("mouth");

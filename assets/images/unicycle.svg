@@ -29,8 +29,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.49497475"
-     inkscape:cx="297.92575"
-     inkscape:cy="454.91109"
+     inkscape:cx="351.5261"
+     inkscape:cy="296.8029"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -56,20 +56,26 @@
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#999999;stroke-width:10;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 318.617,1049.2452 0,-630"
+       style="fill:none;fill-rule:evenodd;stroke:#6c6c6c;stroke-width:10;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 319.00949,1048.8527 0,-630.00003"
        id="path4150"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9" />
     <path
        inkscape:connector-curvature="0"
        id="path4152"
-       d="m 3.617,734.2452 630,0"
-       style="fill:none;fill-rule:evenodd;stroke:#999999;stroke-width:10;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+       d="m 4.0094866,733.85267 630.0000034,0"
+       style="fill:none;fill-rule:evenodd;stroke:#6c6c6c;stroke-width:10;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9" />
     <circle
-       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:31.21501923;stroke-linecap:butt;stroke-opacity:1"
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:32;stroke-linecap:butt;stroke-opacity:1"
        id="path4136"
-       cx="318.117"
-       cy="734.24524"
-       r="302.50949" />
+       cx="318.50949"
+       cy="733.85272"
+       r="302.50949"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9" />
   </g>
 </svg>
